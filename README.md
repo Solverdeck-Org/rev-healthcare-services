@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rev Healthcare Services
 
-## Getting Started
+Next.js 16 front end whose entire UI — header, footer, page bodies, images, links and
+SEO text — is driven by Wix headless CMS (Wix Data collections). Nothing user-visible is
+hardcoded; the template only decides layout and styling.
 
-First, run the development server:
+## Setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. `cp .env.example .env.local` and fill in:
+   - `WIX_API_KEY` — Wix account API key (Settings → API Keys), scoped to Wix Data read.
+   - `WIX_SITE_ID` — the site holding the collections.
+   - `REVALIDATE_SECRET` — any random string.
+2. `bun scripts/seed-wix.ts` — creates the collections below and fills them with
+   starting content. Safe to re-run; it skips anything that already exists.
+3. `bun dev`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+After seeding, all content editing happens in the Wix CMS. Nothing in this repo
+needs to change to add a page, reorder a section, or swap an image.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Collections
 
-## Learn More
+**SiteSettings** (one item) — `siteName`, `logo` (image), `logoAlt`, `phone`, `phoneHref`,
+`ctaLabel`, `ctaHref`, `footerText`, `footerNote`.
 
-To learn more about Next.js, take a look at the following resources:
+**NavLinks** — `label`, `href`, `order` (number), `location` (`header` | `footer`),
+`group` (footer column title).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Pages** — `slug`, `title`, `seoDescription`. The home page uses slug `home`; every other
+slug is served at `/<slug>`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Sections** — `pageSlug`, `sectionKey` (unique), `order` (number), `type`
+(`hero` | `cards` | `links` | `richText` | `cta`), `eyebrow`, `heading`, `subheading`,
+`body`, `image`, `imageAlt`, `ctaLabel`, `ctaHref`, `inputLabel`, `inputPlaceholder`.
 
-## Deploy on Vercel
+**SectionItems** — `sectionKey` (matches `Sections.sectionKey`), `order`, `title`, `description`,
+`href`, `image`, `imageAlt`. Used for card grids and link lists.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Theming
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Brand colors live as CSS variables in `src/app/globals.css` (`--brand`, `--brand-dark`,
+`--brand-light`). Swap those to restyle the whole site; the palette is green throughout.
+
+## Caching
+
+Content reads use `use cache` with `cacheLife("hours")` and are tagged `site` and
+`page:<slug>`. Publish a Wix automation that POSTs to
+`/api/revalidate?secret=...&slug=<slug>` to refresh instantly after an edit.
