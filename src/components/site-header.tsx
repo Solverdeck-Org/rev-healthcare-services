@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { MobileNav } from "@/components/mobile-nav";
 import { getSiteSettings } from "@/lib/content";
 
 export async function SiteHeader() {
@@ -7,25 +8,31 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4">
-        <Link href="/" className="flex shrink-0 items-center gap-2">
+      <div className="relative mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
+        <MobileNav
+          links={settings.headerNav}
+          phone={settings.phone}
+          phoneHref={settings.phoneHref}
+        />
+
+        <Link href="/" className="flex min-w-0 items-center gap-2">
           {settings.logoUrl ? (
             <Image
               src={settings.logoUrl}
               alt={settings.logoAlt ?? settings.siteName}
               width={160}
               height={36}
-              className="h-9 w-auto"
+              className="h-8 w-auto max-w-[140px] object-contain sm:h-9 sm:max-w-[200px]"
               priority
             />
           ) : (
-            <span className="text-xl font-bold text-brand">
+            <span className="truncate text-base font-bold text-brand sm:text-xl">
               {settings.siteName}
             </span>
           )}
         </Link>
 
-        <nav className="hidden flex-1 items-center gap-6 md:flex">
+        <nav className="hidden flex-1 items-center gap-6 md:ml-10 md:flex lg:ml-20 lg:gap-8">
           {settings.headerNav.map((link) => (
             <Link
               key={`${link.href}-${link.label}`}
@@ -37,7 +44,7 @@ export async function SiteHeader() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-4">
+        <div className="ml-auto flex shrink-0 items-center gap-4">
           {settings.phone ? (
             <a
               href={settings.phoneHref ?? `tel:${settings.phone}`}
