@@ -25,7 +25,11 @@ function Heading({ section }: { section: Section }) {
 function Hero({ section }: { section: Section }) {
   return (
     <section className="bg-surface">
-      <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-16 lg:grid-cols-2">
+      <div
+        className={`mx-auto grid max-w-6xl items-center gap-8 px-4 py-16 ${
+          section.imageUrl ? "lg:grid-cols-2" : ""
+        }`}
+      >
         <div>
           <h1 className="text-4xl font-bold leading-tight text-brand sm:text-5xl">
             {section.heading}
