@@ -31,11 +31,11 @@ function Hero({ section }: { section: Section }) {
         }`}
       >
         <div>
-          <h1 className="text-4xl font-bold leading-tight text-brand sm:text-5xl">
+          <h1 className="text-3xl font-bold leading-tight text-brand sm:text-4xl">
             {section.heading}
           </h1>
           {section.subheading ? (
-            <p className="mt-4 max-w-md text-xl text-muted">
+            <p className="mt-4 max-w-md text-lg text-muted">
               {section.subheading}
             </p>
           ) : null}
@@ -145,10 +145,10 @@ function Links({ section }: { section: Section }) {
 
 function RichText({ section }: { section: Section }) {
   return (
-    <section className="mx-auto max-w-3xl px-4 py-14">
+    <section className="mx-auto max-w-6xl px-4 py-14">
       <Heading section={section} />
       {section.body ? (
-        <div className="mt-4 space-y-4 text-muted">
+        <div className="mt-4 max-w-3xl space-y-4 text-muted">
           {section.body.split("\n\n").map((paragraph) => (
             <p key={paragraph.slice(0, 32)}>{paragraph}</p>
           ))}
