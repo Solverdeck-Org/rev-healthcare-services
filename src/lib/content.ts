@@ -78,7 +78,7 @@ function byOrder(a: WixItem, b: WixItem) {
 
 export async function getSiteSettings(): Promise<SiteSettings> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag("site");
 
   const [settingsItems, navItems] = await Promise.all([
@@ -112,7 +112,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
 export async function getPage(slug: string): Promise<Page | null> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag("site", `page:${slug}`);
 
   const pages = await queryCollection(COLLECTIONS.pages, {
