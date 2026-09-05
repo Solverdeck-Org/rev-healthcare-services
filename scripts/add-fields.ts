@@ -28,6 +28,17 @@ const NEW_FIELDS: [collection: string, key: string, type: string][] = [
   ["SectionItems", "subtitle", "TEXT"],
   // Job type (Full-time, Contract) — the third line on a jobList row.
   ["SectionItems", "meta", "TEXT"],
+  // Heading above the second column of a featurePanel section.
+  ["Sections", "secondaryHeading", "TEXT"],
+  // Lead-capture form in the third column of a featurePanel section.
+  ["Sections", "formHeading", "TEXT"],
+  ["Sections", "formQuestion", "TEXT"],
+  ["Sections", "formSubmitLabel", "TEXT"],
+  ["Sections", "formDisclaimer", "TEXT"],
+  // articleGrid: which card an item belongs to, plus each card's footer link.
+  ["SectionItems", "group", "TEXT"],
+  ["SectionItems", "ctaLabel", "TEXT"],
+  ["SectionItems", "ctaHref", "TEXT"],
 ];
 
 for (const [dataCollectionId, key, type] of NEW_FIELDS) {
@@ -49,7 +60,7 @@ for (const [dataCollectionId, key, type] of NEW_FIELDS) {
   }
 
   const body = await response.text();
-  if (response.status === 409 || body.includes("ALREADY_EXISTS")) {
+  if (response.status === 409 || /already exists/i.test(body)) {
     console.log(`  = ${dataCollectionId}.${key} exists, skipping`);
     continue;
   }

@@ -43,7 +43,7 @@ export async function SiteHeader() {
                 <Link
                   key={`${link.href}-${link.label}`}
                   href={link.href}
-                  className="py-5 text-sm font-medium text-foreground hover:text-brand"
+                  className="py-5 text-base font-medium text-foreground hover:text-brand"
                 >
                   {link.label}
                 </Link>

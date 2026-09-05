@@ -26,6 +26,9 @@ export type SectionItem = {
   title: string;
   subtitle?: string;
   meta?: string;
+  group?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
   description?: string;
   href?: string;
   imageUrl?: string;
@@ -42,7 +45,9 @@ export type SectionType =
   | "stats"
   | "team"
   | "featureList"
-  | "jobList";
+  | "jobList"
+  | "featurePanel"
+  | "articleGrid";
 
 export type Section = {
   key: string;
@@ -58,6 +63,11 @@ export type Section = {
   inputLabel?: string;
   inputPlaceholder?: string;
   imagePosition?: "left" | "right";
+  secondaryHeading?: string;
+  formHeading?: string;
+  formQuestion?: string;
+  formSubmitLabel?: string;
+  formDisclaimer?: string;
   items: SectionItem[];
 };
 
@@ -169,6 +179,11 @@ export async function getPage(slug: string): Promise<Page | null> {
       inputPlaceholder: str(section, "inputPlaceholder"),
       imagePosition:
         str(section, "imagePosition") === "left" ? "left" : "right",
+      secondaryHeading: str(section, "secondaryHeading"),
+      formHeading: str(section, "formHeading"),
+      formQuestion: str(section, "formQuestion"),
+      formSubmitLabel: str(section, "formSubmitLabel"),
+      formDisclaimer: str(section, "formDisclaimer"),
       items: children
         .filter((child) => str(child, "sectionKey") === key)
         .sort(byOrder)
@@ -176,6 +191,9 @@ export async function getPage(slug: string): Promise<Page | null> {
           title: str(child, "title") ?? "",
           subtitle: str(child, "subtitle"),
           meta: str(child, "meta"),
+          group: str(child, "group"),
+          ctaLabel: str(child, "ctaLabel"),
+          ctaHref: str(child, "ctaHref"),
           description: str(child, "description"),
           href: str(child, "href"),
           imageUrl: mediaUrl(str(child, "image")),

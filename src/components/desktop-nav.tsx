@@ -22,7 +22,7 @@ export function DesktopNav({ links }: { links: NavLink[] }) {
             key={`${link.href}-${link.label}`}
             href={link.href}
             aria-current={active ? "page" : undefined}
-            className={`relative py-5 text-sm font-medium transition-colors after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:rounded-full ${
+            className={`relative py-5 text-base font-medium transition-colors after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:rounded-full ${
               active
                 ? "text-brand after:bg-brand"
                 : "text-foreground hover:text-brand"

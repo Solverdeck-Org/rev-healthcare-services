@@ -2,16 +2,21 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #14261c;
-  --surface: #f4f7f2;
-  --border: #dfe7db;
-  --muted: #566356;
+  --foreground: #1a1a1a;
+  /* Warm cream used behind the hero, as in the reference template. */
+  --surface: #f3f0ea;
+  --border: #dcdcdc;
+  --muted: #555555;
 
-  /* Brand green (replaces the reference site's cyan) */
-  --brand: #1f7a4d;
-  --brand-dark: #16603c;
-  --brand-light: #e8f4ed;
+  /* Brand teal, matching the reference template. */
+  --brand: #0f7d92;
+  --brand-dark: #0b6375;
+  --brand-light: #e7f2f5;
   --brand-contrast: #ffffff;
+
+  /* Footer: light grey body with a darker slate bar underneath. */
+  --footer: #eff0f1;
+  --footer-bar: #667b85;
 }
 
 @theme inline {
@@ -24,6 +29,8 @@
   --color-brand-dark: var(--brand-dark);
   --color-brand-light: var(--brand-light);
   --color-brand-contrast: var(--brand-contrast);
+  --color-footer: var(--footer);
+  --color-footer-bar: var(--footer-bar);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

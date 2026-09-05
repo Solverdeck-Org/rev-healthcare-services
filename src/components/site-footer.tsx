@@ -14,45 +14,43 @@ export async function SiteFooter() {
   );
 
   return (
-    <footer className="mt-auto bg-brand-dark text-brand-contrast">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <p className="text-lg font-bold">{settings.siteName}</p>
-          {settings.footerText ? (
-            <p className="mt-3 text-sm text-brand-contrast/80">
-              {settings.footerText}
-            </p>
-          ) : null}
-        </div>
+    <footer className="mt-auto">
+      <div className="bg-footer">
+        <div className="mx-auto max-w-6xl px-4 py-12">
+          <p className="text-xl font-bold text-brand">{settings.siteName}</p>
 
-        {Object.entries(groups).map(([group, links]) => (
-          <div key={group || "links"}>
-            {group ? (
-              <p className="text-sm font-semibold uppercase tracking-wide">
-                {group}
-              </p>
-            ) : null}
-            <ul className="mt-3 space-y-2">
-              {links.map((link) => (
-                <li key={`${link.href}-${link.label}`}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-brand-contrast/80 hover:text-brand-contrast"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {Object.entries(groups).map(([group, links]) => (
+              <div key={group || "links"}>
+                {group ? (
+                  <p className="text-sm font-bold uppercase tracking-wide">
+                    {group}
+                  </p>
+                ) : null}
+                <ul className="mt-4 space-y-3">
+                  {links.map((link) => (
+                    <li key={`${link.href}-${link.label}`}>
+                      <Link
+                        href={link.href}
+                        className="text-sm text-foreground hover:text-brand hover:underline"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
 
-      {settings.footerNote ? (
-        <div className="border-t border-brand-contrast/20">
-          <p className="mx-auto max-w-6xl px-4 py-6 text-xs text-brand-contrast/70">
-            {settings.footerNote}
-          </p>
+      {settings.footerText || settings.footerNote ? (
+        <div className="bg-footer-bar text-brand-contrast">
+          <div className="mx-auto max-w-6xl space-y-2 px-4 py-6 text-center text-xs leading-relaxed">
+            {settings.footerText ? <p>{settings.footerText}</p> : null}
+            {settings.footerNote ? <p>{settings.footerNote}</p> : null}
+          </div>
         </div>
       ) : null}
     </footer>
