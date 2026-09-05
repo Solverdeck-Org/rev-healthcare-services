@@ -191,6 +191,176 @@ function Cta({ section }: { section: Section }) {
   );
 }
 
+function SplitImageText({ section }: { section: Section }) {
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-14">
+      <div className="grid items-center gap-10 lg:grid-cols-2">
+        {section.imageUrl ? (
+          <Image
+            src={section.imageUrl}
+            alt={section.imageAlt ?? ""}
+            width={720}
+            height={540}
+            className={`h-auto w-full rounded-2xl object-cover ${
+              section.imagePosition === "left" ? "" : "lg:order-last"
+            }`}
+          />
+        ) : null}
+        <div>
+          <Heading section={section} />
+          {section.body ? (
+            <div className="mt-4 space-y-4 text-muted">
+              {section.body.split("\n\n").map((paragraph) => (
+                <p key={paragraph.slice(0, 32)}>{paragraph}</p>
+              ))}
+            </div>
+          ) : null}
+          {section.ctaLabel ? (
+            <Link
+              href={section.ctaHref ?? "#"}
+              className="mt-6 inline-block rounded-full bg-brand px-6 py-3 text-sm font-semibold uppercase tracking-wide text-brand-contrast hover:bg-brand-dark"
+            >
+              {section.ctaLabel}
+            </Link>
+          ) : null}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Stats({ section }: { section: Section }) {
+  return (
+    <section className="bg-brand-light">
+      <div className="mx-auto max-w-6xl px-4 py-14">
+        <Heading section={section} />
+        <dl className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {section.items.map((item) => (
+            <div key={item.title}>
+              <dt className="text-3xl font-bold text-brand sm:text-4xl">
+                {item.title}
+              </dt>
+              {item.description ? (
+                <dd className="mt-1 text-sm text-muted">{item.description}</dd>
+              ) : null}
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  );
+}
+
+function Team({ section }: { section: Section }) {
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-14">
+      <Heading section={section} />
+      <ul className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {section.items.map((item) => (
+          <li key={item.title}>
+            {item.imageUrl ? (
+              <Image
+                src={item.imageUrl}
+                alt={item.imageAlt ?? item.title}
+                width={400}
+                height={400}
+                className="mb-4 aspect-square w-full rounded-xl object-cover"
+              />
+            ) : (
+              <div className="mb-4 aspect-square w-full rounded-xl bg-surface" />
+            )}
+            <p className="font-semibold">{item.title}</p>
+            {item.subtitle ? (
+              <p className="text-sm text-brand">{item.subtitle}</p>
+            ) : null}
+            {item.description ? (
+              <p className="mt-2 text-sm text-muted">{item.description}</p>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function FeatureList({ section }: { section: Section }) {
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-14">
+      <Heading section={section} />
+      <ul className="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-2">
+        {section.items.map((item) => (
+          <li key={item.title} className="flex gap-4">
+            {item.imageUrl ? (
+              <Image
+                src={item.imageUrl}
+                alt={item.imageAlt ?? ""}
+                width={48}
+                height={48}
+                className="size-12 shrink-0 object-contain"
+              />
+            ) : (
+              <span
+                aria-hidden="true"
+                className="mt-1 size-3 shrink-0 rounded-full bg-brand"
+              />
+            )}
+            <div>
+              <p className="font-semibold">{item.title}</p>
+              {item.description ? (
+                <p className="mt-1 text-sm text-muted">{item.description}</p>
+              ) : null}
+              {item.href ? (
+                <Link
+                  href={item.href}
+                  className="mt-2 inline-block text-sm font-semibold text-brand hover:underline"
+                >
+                  Learn more
+                </Link>
+              ) : null}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function JobList({ section }: { section: Section }) {
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-14">
+      <Heading section={section} />
+      <ul className="mt-8 divide-y divide-border border-y border-border">
+        {section.items.map((item) => (
+          <li
+            key={`${item.title}-${item.subtitle}`}
+            className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div>
+              <p className="text-lg font-semibold">{item.title}</p>
+              <p className="mt-1 text-sm text-muted">
+                {[item.subtitle, item.meta].filter(Boolean).join(" · ")}
+              </p>
+              {item.description ? (
+                <p className="mt-2 max-w-2xl text-sm text-muted">
+                  {item.description}
+                </p>
+              ) : null}
+            </div>
+            {item.href ? (
+              <Link
+                href={item.href}
+                className="shrink-0 rounded-full border border-brand px-5 py-2 text-sm font-semibold text-brand hover:bg-brand hover:text-brand-contrast"
+              >
+                Apply
+              </Link>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export function SectionRenderer({ section }: { section: Section }) {
   switch (section.type) {
     case "hero":
@@ -201,6 +371,16 @@ export function SectionRenderer({ section }: { section: Section }) {
       return <Links section={section} />;
     case "cta":
       return <Cta section={section} />;
+    case "splitImageText":
+      return <SplitImageText section={section} />;
+    case "stats":
+      return <Stats section={section} />;
+    case "team":
+      return <Team section={section} />;
+    case "featureList":
+      return <FeatureList section={section} />;
+    case "jobList":
+      return <JobList section={section} />;
     default:
       return <RichText section={section} />;
   }

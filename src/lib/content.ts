@@ -24,13 +24,25 @@ export type SiteSettings = {
 
 export type SectionItem = {
   title: string;
+  subtitle?: string;
+  meta?: string;
   description?: string;
   href?: string;
   imageUrl?: string;
   imageAlt?: string;
 };
 
-export type SectionType = "hero" | "cards" | "links" | "richText" | "cta";
+export type SectionType =
+  | "hero"
+  | "cards"
+  | "links"
+  | "richText"
+  | "cta"
+  | "splitImageText"
+  | "stats"
+  | "team"
+  | "featureList"
+  | "jobList";
 
 export type Section = {
   key: string;
@@ -45,6 +57,7 @@ export type Section = {
   ctaHref?: string;
   inputLabel?: string;
   inputPlaceholder?: string;
+  imagePosition?: "left" | "right";
   items: SectionItem[];
 };
 
@@ -154,11 +167,15 @@ export async function getPage(slug: string): Promise<Page | null> {
       ctaHref: str(section, "ctaHref"),
       inputLabel: str(section, "inputLabel"),
       inputPlaceholder: str(section, "inputPlaceholder"),
+      imagePosition:
+        str(section, "imagePosition") === "left" ? "left" : "right",
       items: children
         .filter((child) => str(child, "sectionKey") === key)
         .sort(byOrder)
         .map((child) => ({
           title: str(child, "title") ?? "",
+          subtitle: str(child, "subtitle"),
+          meta: str(child, "meta"),
           description: str(child, "description"),
           href: str(child, "href"),
           imageUrl: mediaUrl(str(child, "image")),

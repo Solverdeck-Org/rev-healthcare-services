@@ -29,12 +29,29 @@ needs to change to add a page, reorder a section, or swap an image.
 **Pages** — `slug`, `title`, `seoDescription`. The home page uses slug `home`; every other
 slug is served at `/<slug>`.
 
-**Sections** — `pageSlug`, `sectionKey` (unique), `order` (number), `type`
-(`hero` | `cards` | `links` | `richText` | `cta`), `eyebrow`, `heading`, `subheading`,
-`body`, `image`, `imageAlt`, `ctaLabel`, `ctaHref`, `inputLabel`, `inputPlaceholder`.
+**Sections** — `pageSlug`, `sectionKey` (unique), `order` (number), `type`, `eyebrow`,
+`heading`, `subheading`, `body`, `image`, `imageAlt`, `ctaLabel`, `ctaHref`, `inputLabel`,
+`inputPlaceholder`, `imagePosition` (`left` | `right`, splitImageText only).
 
-**SectionItems** — `sectionKey` (matches `Sections.sectionKey`), `order`, `title`, `description`,
-`href`, `image`, `imageAlt`. Used for card grids and link lists.
+**SectionItems** — `sectionKey` (matches `Sections.sectionKey`), `order`, `title`,
+`subtitle`, `meta`, `description`, `href`, `image`, `imageAlt`.
+
+### Section types
+
+| `type` | Layout | Uses SectionItems |
+|---|---|---|
+| `hero` | Headline, sub, optional ZIP input + button, optional image right | no |
+| `cards` | 3-across bordered cards | `title`, `description`, `href`, `image` |
+| `links` | 4-across list of text links | `title`, `href` |
+| `richText` | Eyebrow, heading, paragraphs | no |
+| `cta` | Pale green band with a button | no |
+| `splitImageText` | Image one side, copy + button the other (`imagePosition`) | no |
+| `stats` | Green band, 4-across big numbers | `title` (value), `description` (label) |
+| `team` | 4-across square photos | `title` (name), `subtitle` (role), `description`, `image` |
+| `featureList` | 2-column list, icon or bullet per row | `title`, `description`, `href`, `image` (icon) |
+| `jobList` | Divided rows with an Apply button | `title` (role), `subtitle` (location), `meta` (type), `description`, `href` |
+
+Paragraphs in `body` are split on blank lines.
 
 ## Theming
 
