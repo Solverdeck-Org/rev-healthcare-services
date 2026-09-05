@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { DesktopNav } from "@/components/desktop-nav";
-import { MobileNav } from "@/components/mobile-nav";
+import { DesktopNav, DesktopNavFallback } from "@/components/desktop-nav";
+import { MobileNav, MobileNavFallback } from "@/components/mobile-nav";
 import { getSiteSettings } from "@/lib/content";
 
 export async function SiteHeader() {
@@ -11,11 +11,13 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background">
       <div className="relative mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-        <Suspense fallback={<div className="size-10 md:hidden" />}>
+        <Suspense fallback={<MobileNavFallback />}>
           <MobileNav
             links={settings.headerNav}
             phone={settings.phone}
             phoneHref={settings.phoneHref}
+            phonePrompt={settings.phonePrompt}
+            phoneLabel={settings.phoneLabel}
           />
         </Suspense>
 
@@ -36,21 +38,7 @@ export async function SiteHeader() {
           )}
         </Link>
 
-        <Suspense
-          fallback={
-            <nav className="hidden flex-1 items-center gap-6 md:ml-10 md:flex lg:ml-20 lg:gap-8">
-              {settings.headerNav.map((link) => (
-                <Link
-                  key={`${link.href}-${link.label}`}
-                  href={link.href}
-                  className="py-5 text-base font-medium text-foreground hover:text-brand"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          }
-        >
+        <Suspense fallback={<DesktopNavFallback links={settings.headerNav} />}>
           <DesktopNav links={settings.headerNav} />
         </Suspense>
 

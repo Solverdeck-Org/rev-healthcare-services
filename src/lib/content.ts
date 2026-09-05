@@ -14,6 +14,8 @@ export type SiteSettings = {
   logoAlt?: string;
   phone?: string;
   phoneHref?: string;
+  phonePrompt?: string;
+  phoneLabel?: string;
   ctaLabel?: string;
   ctaHref?: string;
   footerText?: string;
@@ -120,6 +122,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     logoAlt: str(settings, "logoAlt") ?? str(settings, "siteName"),
     phone: str(settings, "phone"),
     phoneHref: str(settings, "phoneHref"),
+    phonePrompt: str(settings, "phonePrompt"),
+    phoneLabel: str(settings, "phoneLabel"),
     ctaLabel: str(settings, "ctaLabel"),
     ctaHref: str(settings, "ctaHref"),
     footerText: str(settings, "footerText"),

@@ -39,6 +39,9 @@ const NEW_FIELDS: [collection: string, key: string, type: string][] = [
   ["SectionItems", "group", "TEXT"],
   ["SectionItems", "ctaLabel", "TEXT"],
   ["SectionItems", "ctaHref", "TEXT"],
+  // Mobile menu: the prompt shown beside the phone number.
+  ["SiteSettings", "phonePrompt", "TEXT"],
+  ["SiteSettings", "phoneLabel", "TEXT"],
 ];
 
 for (const [dataCollectionId, key, type] of NEW_FIELDS) {
