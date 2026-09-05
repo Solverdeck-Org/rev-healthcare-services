@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { isActive } from "@/components/desktop-nav";
 import type { NavLink } from "@/lib/content";
 
 type Props = {
@@ -12,6 +14,7 @@ type Props = {
 
 export function MobileNav({ links, phone, phoneHref }: Props) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <div className="md:hidden">
@@ -46,17 +49,25 @@ export function MobileNav({ links, phone, phoneHref }: Props) {
         className="absolute inset-x-0 top-full border-b border-border bg-background shadow-sm"
       >
         <ul className="px-4 py-2">
-          {links.map((link) => (
-            <li key={`${link.href}-${link.label}`}>
-              <Link
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="block py-3 text-base font-medium text-foreground hover:text-brand"
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
+          {links.map((link) => {
+            const active = isActive(pathname, link.href);
+            return (
+              <li key={`${link.href}-${link.label}`}>
+                <Link
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  aria-current={active ? "page" : undefined}
+                  className={`block border-l-2 py-3 pl-3 text-base font-medium ${
+                    active
+                      ? "border-brand text-brand"
+                      : "border-transparent text-foreground hover:text-brand"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            );
+          })}
           {phone ? (
             <li className="border-t border-border">
               <a

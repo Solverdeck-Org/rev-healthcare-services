@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
+import { DesktopNav } from "@/components/desktop-nav";
 import { MobileNav } from "@/components/mobile-nav";
 import { getSiteSettings } from "@/lib/content";
 
@@ -9,11 +11,13 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background">
       <div className="relative mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-        <MobileNav
-          links={settings.headerNav}
-          phone={settings.phone}
-          phoneHref={settings.phoneHref}
-        />
+        <Suspense fallback={<div className="size-10 md:hidden" />}>
+          <MobileNav
+            links={settings.headerNav}
+            phone={settings.phone}
+            phoneHref={settings.phoneHref}
+          />
+        </Suspense>
 
         <Link href="/" className="flex min-w-0 items-center gap-2">
           {settings.logoUrl ? (
@@ -32,17 +36,23 @@ export async function SiteHeader() {
           )}
         </Link>
 
-        <nav className="hidden flex-1 items-center gap-6 md:ml-10 md:flex lg:ml-20 lg:gap-8">
-          {settings.headerNav.map((link) => (
-            <Link
-              key={`${link.href}-${link.label}`}
-              href={link.href}
-              className="text-sm font-medium text-foreground hover:text-brand"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <Suspense
+          fallback={
+            <nav className="hidden flex-1 items-center gap-6 md:ml-10 md:flex lg:ml-20 lg:gap-8">
+              {settings.headerNav.map((link) => (
+                <Link
+                  key={`${link.href}-${link.label}`}
+                  href={link.href}
+                  className="py-5 text-sm font-medium text-foreground hover:text-brand"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          }
+        >
+          <DesktopNav links={settings.headerNav} />
+        </Suspense>
 
         <div className="ml-auto flex shrink-0 items-center gap-4">
           {settings.phone ? (
