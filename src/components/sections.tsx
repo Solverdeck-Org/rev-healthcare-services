@@ -606,6 +606,16 @@ function ArticleGrid({ section }: { section: Section }) {
                 key={card.group ?? card.title}
                 className="flex flex-col bg-background"
               >
+                {card.imageUrl ? (
+                  <Image
+                    src={card.imageUrl}
+                    alt={card.imageAlt ?? card.title}
+                    width={640}
+                    height={480}
+                    className="aspect-[4/3] w-full object-cover"
+                  />
+                ) : null}
+
                 <div className="flex flex-1 flex-col py-6 md:p-6">
                   <h3 className="text-2xl font-bold">{card.title}</h3>
 
