@@ -45,7 +45,7 @@ async function PageBody({ params }: { params: Promise<{ slug: string }> }) {
   return (
     <>
       {page.sections.map((section) => (
-        <SectionRenderer key={section.key} section={section} />
+        <SectionRenderer key={section.id} section={section} />
       ))}
     </>
   );

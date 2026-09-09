@@ -20,9 +20,13 @@ export type SiteSettings = {
   ctaHref?: string;
   footerText?: string;
   footerNote?: string;
+  addressHeading?: string;
+  address?: string;
+  email?: string;
   headerNav: NavLink[];
   footerNav: NavLink[];
   socialNav: NavLink[];
+  legalNav: NavLink[];
 };
 
 export type SectionItem = {
@@ -52,9 +56,15 @@ export type SectionType =
   | "featurePanel"
   | "articleGrid"
   | "faq"
-  | "newsletter";
+  | "newsletter"
+  | "locationFinder"
+  | "locationList"
+  | "twoColumnText"
+  | "numberedList";
 
 export type Section = {
+  /** Wix item id — unique per row, so it is safe as a React key. */
+  id: string;
   key: string;
   type: SectionType;
   eyebrow?: string;
@@ -130,6 +140,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     ctaLabel: str(settings, "ctaLabel"),
     ctaHref: str(settings, "ctaHref"),
     footerText: str(settings, "footerText"),
+    addressHeading: str(settings, "addressHeading"),
+    address: str(settings, "address"),
+    email: str(settings, "email"),
     footerNote: str(settings, "footerNote"),
     headerNav: links
       .filter((item) => (str(item, "location") ?? "header") === "header")
@@ -139,6 +152,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       .map(toNavLink),
     socialNav: links
       .filter((item) => str(item, "location") === "social")
+      .map(toNavLink),
+    legalNav: links
+      .filter((item) => str(item, "location") === "legal")
       .map(toNavLink),
   };
 }
@@ -176,6 +192,7 @@ export async function getPage(slug: string): Promise<Page | null> {
   const sections = [...sectionItems].sort(byOrder).map((section): Section => {
     const key = str(section, "sectionKey") ?? "";
     return {
+      id: str(section, "_id") ?? key,
       key,
       type: (str(section, "type") as SectionType) ?? "richText",
       eyebrow: str(section, "eyebrow"),

@@ -18,7 +18,7 @@ export default async function Home() {
   return (
     <>
       {page.sections.map((section) => (
-        <SectionRenderer key={section.key} section={section} />
+        <SectionRenderer key={section.id} section={section} />
       ))}
     </>
   );

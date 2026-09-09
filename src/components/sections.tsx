@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { UseMyLocation } from "@/components/use-my-location";
 import type { Section } from "@/lib/content";
 
 function Heading({ section }: { section: Section }) {
@@ -780,6 +781,203 @@ function Newsletter({ section }: { section: Section }) {
   );
 }
 
+/** Search band at the top of the locations page. */
+function LocationFinder({ section }: { section: Section }) {
+  return (
+    <section className="bg-brand-light">
+      <div className="mx-auto max-w-3xl px-4 py-16 text-center md:py-20">
+        {section.heading ? (
+          <h1 className="text-3xl font-bold text-brand sm:text-4xl lg:text-5xl">
+            {section.heading}
+          </h1>
+        ) : null}
+        {section.subheading ? (
+          <p className="mt-4 text-lg text-muted">{section.subheading}</p>
+        ) : null}
+
+        <form
+          action={section.ctaHref ?? "#"}
+          className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row"
+        >
+          <label htmlFor="location-search" className="sr-only">
+            {section.inputLabel ?? "ZIP code or city"}
+          </label>
+          <input
+            id="location-search"
+            name="q"
+            placeholder={section.inputPlaceholder ?? "ZIP Code or City & State"}
+            className="w-full max-w-sm rounded-md border border-border bg-background px-4 py-3 outline-none focus:border-brand"
+          />
+          <button
+            type="submit"
+            className="w-full shrink-0 rounded-md bg-brand px-6 py-3 font-semibold text-brand-contrast hover:bg-brand-dark sm:w-auto"
+          >
+            {section.ctaLabel ?? "Find a local office"}
+          </button>
+        </form>
+
+        <UseMyLocation label={section.eyebrow ?? "Use my current location"} />
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Directory of locations, split into columns by each item's `group`
+ * (for example "A - H", or a region name).
+ */
+function LocationList({ section }: { section: Section }) {
+  const columns = section.items.reduce<Record<string, typeof section.items>>(
+    (acc, item) => {
+      const group = item.group ?? "";
+      acc[group] = acc[group] ? [...acc[group], item] : [item];
+      return acc;
+    },
+    {},
+  );
+
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-14 md:py-20">
+      {section.heading ? (
+        <h2 className="mb-10 text-2xl font-bold sm:text-3xl">
+          {section.heading}
+        </h2>
+      ) : null}
+
+      <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        {Object.entries(columns).map(([group, items]) => (
+          <div key={group || "all"}>
+            {group ? (
+              <h3 className="text-xl font-bold text-brand">{group}</h3>
+            ) : null}
+            <ul className="mt-5 space-y-3">
+              {items.map((item) => (
+                <li key={`${item.title}-${item.href}`}>
+                  <Link
+                    href={item.href ?? "#"}
+                    className="text-foreground underline decoration-border underline-offset-4 hover:text-brand hover:decoration-brand"
+                  >
+                    {item.title}
+                  </Link>
+                  {item.subtitle ? (
+                    <span className="block text-sm text-muted">
+                      {item.subtitle}
+                    </span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Heading on the left, prose on the right — the layout the reference careers
+ * page uses repeatedly. Items render as a bullet list under the prose, except
+ * items tagged `meta: "button"`, which become buttons.
+ */
+function TwoColumnText({ section }: { section: Section }) {
+  const buttons = section.items.filter((item) => item.meta === "button");
+  const bullets = section.items.filter((item) => item.meta !== "button");
+
+  return (
+    <section className="bg-surface">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-14 md:py-20 lg:grid-cols-2 lg:gap-16">
+        <div>
+          {section.eyebrow ? (
+            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-muted">
+              {section.eyebrow}
+            </p>
+          ) : null}
+          {section.heading ? (
+            <h2 className="text-3xl font-bold leading-tight text-brand sm:text-4xl">
+              {section.heading}
+            </h2>
+          ) : null}
+        </div>
+
+        <div>
+          {section.subheading ? (
+            <p className="font-bold">{section.subheading}</p>
+          ) : null}
+          {section.body ? (
+            <div className="mt-3 space-y-4 text-muted">
+              {section.body.split("\n\n").map((paragraph) => (
+                <p key={paragraph.slice(0, 32)}>{paragraph}</p>
+              ))}
+            </div>
+          ) : null}
+
+          {bullets.length ? (
+            <ul className="mt-6 list-disc space-y-2 pl-5 text-muted marker:text-brand">
+              {bullets.map((item) => (
+                <li key={item.title}>
+                  <span className="text-foreground">{item.title}</span>
+                  {item.description ? (
+                    <span className="block text-sm">{item.description}</span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          {buttons.length ? (
+            <div className="mt-8 flex flex-wrap gap-4">
+              {buttons.map((item, index) => (
+                <Link
+                  key={item.title}
+                  href={item.href ?? "#"}
+                  className={
+                    index === 0
+                      ? "rounded-md bg-brand px-6 py-3 font-semibold text-brand-contrast hover:bg-brand-dark"
+                      : "rounded-md border border-brand px-6 py-3 font-semibold text-brand hover:bg-brand hover:text-brand-contrast"
+                  }
+                >
+                  {item.title}
+                </Link>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Numbered two-column list, as in the reference's "Training & Benefits". */
+function NumberedList({ section }: { section: Section }) {
+  return (
+    <section className="bg-brand-light">
+      <div className="mx-auto max-w-6xl px-4 py-14 md:py-20">
+        {section.heading ? (
+          <h2 className="text-3xl font-bold text-brand sm:text-4xl">
+            {section.heading}
+          </h2>
+        ) : null}
+        {section.body ? (
+          <p className="mt-3 max-w-3xl text-muted">{section.body}</p>
+        ) : null}
+
+        <ol className="mt-10 grid gap-x-12 gap-y-8 md:grid-cols-2">
+          {section.items.map((item, index) => (
+            <li key={item.title}>
+              <h3 className="font-bold">
+                {index + 1}. {item.title}
+              </h3>
+              {item.description ? (
+                <p className="mt-2 text-muted">{item.description}</p>
+              ) : null}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
 export function SectionRenderer({ section }: { section: Section }) {
   switch (section.type) {
     case "hero":
@@ -808,6 +1006,14 @@ export function SectionRenderer({ section }: { section: Section }) {
       return <Faq section={section} />;
     case "newsletter":
       return <Newsletter section={section} />;
+    case "locationFinder":
+      return <LocationFinder section={section} />;
+    case "locationList":
+      return <LocationList section={section} />;
+    case "twoColumnText":
+      return <TwoColumnText section={section} />;
+    case "numberedList":
+      return <NumberedList section={section} />;
     default:
       return <RichText section={section} />;
   }

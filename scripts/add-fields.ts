@@ -44,6 +44,10 @@ const NEW_FIELDS: [collection: string, key: string, type: string][] = [
   ["SiteSettings", "phoneLabel", "TEXT"],
   // Header nav: icon keyword rendered beside each link (see nav-icon.tsx).
   ["NavLinks", "icon", "TEXT"],
+  // Footer headquarters block.
+  ["SiteSettings", "addressHeading", "TEXT"],
+  ["SiteSettings", "address", "TEXT"],
+  ["SiteSettings", "email", "TEXT"],
 ];
 
 for (const [dataCollectionId, key, type] of NEW_FIELDS) {
