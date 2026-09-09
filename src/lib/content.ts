@@ -22,6 +22,7 @@ export type SiteSettings = {
   footerNote?: string;
   headerNav: NavLink[];
   footerNav: NavLink[];
+  socialNav: NavLink[];
 };
 
 export type SectionItem = {
@@ -49,7 +50,9 @@ export type SectionType =
   | "featureList"
   | "jobList"
   | "featurePanel"
-  | "articleGrid";
+  | "articleGrid"
+  | "faq"
+  | "newsletter";
 
 export type Section = {
   key: string;
@@ -134,6 +137,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     footerNav: links
       .filter((item) => str(item, "location") === "footer")
       .map(toNavLink),
+    socialNav: links
+      .filter((item) => str(item, "location") === "social")
+      .map(toNavLink),
   };
 }
 
@@ -142,17 +148,18 @@ export async function getPage(slug: string): Promise<Page | null> {
   cacheLife("minutes");
   cacheTag("site", `page:${slug}`);
 
-  const pages = await queryCollection(COLLECTIONS.pages, {
-    filter: { slug },
-    limit: 1,
-  });
+  // Both only need the slug, so fetch them together — each Wix round trip is
+  // ~0.6s and running them in series is the main cause of slow first paint.
+  const [pages, sectionItems] = await Promise.all([
+    queryCollection(COLLECTIONS.pages, { filter: { slug }, limit: 1 }),
+    queryCollection(COLLECTIONS.sections, {
+      filter: { pageSlug: slug },
+      sort: [{ fieldName: "order", order: "ASC" }],
+    }),
+  ]);
+
   const page = pages[0];
   if (!page) return null;
-
-  const sectionItems = await queryCollection(COLLECTIONS.sections, {
-    filter: { pageSlug: slug },
-    sort: [{ fieldName: "order", order: "ASC" }],
-  });
 
   const keys = sectionItems
     .map((section) => str(section, "sectionKey"))

@@ -42,6 +42,8 @@ const NEW_FIELDS: [collection: string, key: string, type: string][] = [
   // Mobile menu: the prompt shown beside the phone number.
   ["SiteSettings", "phonePrompt", "TEXT"],
   ["SiteSettings", "phoneLabel", "TEXT"],
+  // Header nav: icon keyword rendered beside each link (see nav-icon.tsx).
+  ["NavLinks", "icon", "TEXT"],
 ];
 
 for (const [dataCollectionId, key, type] of NEW_FIELDS) {

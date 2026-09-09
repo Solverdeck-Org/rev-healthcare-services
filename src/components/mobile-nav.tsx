@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { isActive } from "@/components/desktop-nav";
+import { NavIcon } from "@/components/nav-icon";
 import type { NavLink } from "@/lib/content";
 
 type Props = {
@@ -92,10 +93,11 @@ export function MobileNav({
                   href={link.href}
                   onClick={() => setOpen(false)}
                   aria-current={active ? "page" : undefined}
-                  className={`block border-b border-border px-5 py-5 text-xl font-medium uppercase tracking-wide ${
+                  className={`flex items-center gap-4 border-b border-border px-5 py-5 text-xl font-bold uppercase tracking-wide ${
                     active ? "text-brand" : "text-muted hover:text-brand"
                   }`}
                 >
+                  <NavIcon name={link.icon} className="size-6 shrink-0" />
                   {link.label}
                 </Link>
               </li>

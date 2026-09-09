@@ -695,6 +695,91 @@ function ArticleGrid({ section }: { section: Section }) {
   );
 }
 
+/**
+ * Accordion FAQ. Built on <details>/<summary> so it opens and closes without
+ * JavaScript — it works even before hydration.
+ */
+function Faq({ section }: { section: Section }) {
+  return (
+    <section className="bg-surface">
+      <div className="mx-auto max-w-5xl px-4 py-14 md:py-20">
+        {section.heading ? (
+          <h2 className="text-3xl font-bold text-brand sm:text-4xl">
+            {section.heading}
+          </h2>
+        ) : null}
+        {section.subheading ? (
+          <p className="mt-3 text-muted">{section.subheading}</p>
+        ) : null}
+
+        <div className="mt-10 border-t border-border">
+          {section.items.map((item) => (
+            <details key={item.title} className="group border-b border-border">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-left font-bold text-brand marker:hidden hover:text-brand-dark">
+                {item.title}
+                <span
+                  aria-hidden="true"
+                  className="relative size-4 shrink-0 text-brand"
+                >
+                  <span className="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 bg-current" />
+                  <span className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-current transition-transform group-open:scale-y-0" />
+                </span>
+              </summary>
+              {item.description ? (
+                <div className="pb-6 text-muted">
+                  {item.description.split("\n\n").map((paragraph) => (
+                    <p key={paragraph.slice(0, 32)} className="mt-2 first:mt-0">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              ) : null}
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Teal signup band, as in the reference template. */
+function Newsletter({ section }: { section: Section }) {
+  return (
+    <section className="bg-brand text-brand-contrast">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-12 md:flex-row md:justify-center md:gap-10 md:py-14">
+        {section.heading ? (
+          <h2 className="text-center text-3xl leading-tight sm:text-4xl md:text-right">
+            {section.heading}
+          </h2>
+        ) : null}
+
+        <form
+          action={section.ctaHref ?? "#"}
+          className="flex w-full max-w-lg items-center overflow-hidden rounded-md bg-background p-1"
+        >
+          <label htmlFor="newsletter-email" className="sr-only">
+            {section.inputLabel ?? "Email address"}
+          </label>
+          <input
+            id="newsletter-email"
+            name="email"
+            type="email"
+            required
+            placeholder={section.inputPlaceholder ?? "Enter Your Email"}
+            className="min-w-0 flex-1 bg-transparent px-4 py-2 text-foreground outline-none"
+          />
+          <button
+            type="submit"
+            className="shrink-0 rounded-md bg-brand-dark px-6 py-2 font-semibold text-brand-contrast hover:bg-brand"
+          >
+            {section.ctaLabel ?? "Sign Up"}
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}
+
 export function SectionRenderer({ section }: { section: Section }) {
   switch (section.type) {
     case "hero":
@@ -719,6 +804,10 @@ export function SectionRenderer({ section }: { section: Section }) {
       return <FeaturePanel section={section} />;
     case "articleGrid":
       return <ArticleGrid section={section} />;
+    case "faq":
+      return <Faq section={section} />;
+    case "newsletter":
+      return <Newsletter section={section} />;
     default:
       return <RichText section={section} />;
   }

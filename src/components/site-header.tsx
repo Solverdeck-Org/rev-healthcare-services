@@ -46,19 +46,22 @@ export async function SiteHeader() {
           {settings.phone ? (
             <a
               href={settings.phoneHref ?? `tel:${settings.phone}`}
-              className="hidden items-center gap-2 text-sm font-semibold text-brand hover:text-brand-dark sm:inline-flex"
+              className="hidden items-center gap-2 text-base font-bold text-brand hover:text-brand-dark sm:inline-flex lg:text-lg"
             >
               <svg
                 aria-hidden="true"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="size-4 shrink-0"
+                className="size-5 shrink-0 lg:size-6"
               >
                 <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .7-.2 1l-2.3 2.2Z" />
               </svg>
               {settings.phone}
             </a>
           ) : null}
+          {/* LOGIN button — commented out until the member area exists.
+              Restore by uncommenting; the label and href come from
+              SiteSettings.ctaLabel / SiteSettings.ctaHref.
           {settings.ctaLabel ? (
             <Link
               href={settings.ctaHref ?? "#"}
@@ -67,6 +70,7 @@ export async function SiteHeader() {
               {settings.ctaLabel}
             </Link>
           ) : null}
+          */}
         </div>
       </div>
     </header>
