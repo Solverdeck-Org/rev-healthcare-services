@@ -21,6 +21,28 @@ async function ProfileBody() {
 
   // We had a token and Wix rejected it. Say so instead of bouncing back to
   // the login page, which looks like "login did nothing".
+  if (result.status === "no-permission") {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16">
+        <h1 className="text-2xl font-bold">Member access is not enabled yet</h1>
+        <p className="mt-3 text-muted">
+          Sign-in worked, but Wix will not let this app read member profiles. In
+          the Wix dashboard open{" "}
+          <strong>Settings → Headless Settings → OAuth apps</strong>, edit the
+          app, and grant it the <strong>Read Members</strong> permission.
+        </p>
+        <form action="/api/auth/logout" method="post" className="mt-6">
+          <button
+            type="submit"
+            className="rounded-md border border-border px-5 py-2.5 font-semibold text-muted hover:border-brand hover:text-brand"
+          >
+            Log out
+          </button>
+        </form>
+      </div>
+    );
+  }
+
   if (result.status === "unauthorized") {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16">

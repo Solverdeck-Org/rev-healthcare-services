@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { SubmitButton } from "@/components/submit-button";
 
 export const metadata: Metadata = {
   title: "Verify your email",
@@ -47,12 +48,12 @@ export default function VerifyPage({ searchParams }: PageProps<"/verify">) {
           className="mt-2 w-full rounded-md border border-border bg-surface px-4 py-3 text-lg tracking-widest outline-none focus:border-brand"
         />
 
-        <button
-          type="submit"
+        <SubmitButton
+          pendingLabel="Verifying"
           className="mt-5 w-full rounded-md bg-brand px-8 py-3 text-lg font-semibold text-brand-contrast hover:bg-brand-dark"
         >
           Verify
-        </button>
+        </SubmitButton>
       </form>
 
       <p className="mt-6 text-sm text-muted">

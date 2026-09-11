@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { PasswordField } from "@/components/password-field";
+import { SubmitButton } from "@/components/submit-button";
 
 export const metadata: Metadata = {
   title: "Log In or Sign Up",
@@ -57,16 +59,10 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
               className={FIELD}
             />
 
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <input
-              id="password"
+            <PasswordField
               name="password"
-              type="password"
+              label="Password"
               autoComplete="current-password"
-              required
-              placeholder="Password"
               className={FIELD}
             />
 
@@ -93,12 +89,12 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
                 Remember Me
               </label>
 
-              <button
-                type="submit"
+              <SubmitButton
+                pendingLabel="Signing in"
                 className="rounded-md bg-brand px-8 py-2.5 text-lg font-semibold text-brand-contrast hover:bg-brand-dark"
               >
                 Log In
-              </button>
+              </SubmitButton>
             </div>
           </form>
         </section>
@@ -143,26 +139,20 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
               className={FIELD}
             />
 
-            <label htmlFor="signup-password" className="sr-only">
-              Password
-            </label>
-            <input
-              id="signup-password"
+            <PasswordField
               name="password"
-              type="password"
+              label="Password"
               autoComplete="new-password"
-              required
               minLength={8}
-              placeholder="Password"
               className={FIELD}
             />
 
-            <button
-              type="submit"
+            <SubmitButton
+              pendingLabel="Creating account"
               className="mt-5 rounded-md bg-brand px-8 py-2.5 text-lg font-semibold text-brand-contrast hover:bg-brand-dark"
             >
               Get Started
-            </button>
+            </SubmitButton>
           </form>
         </section>
       </div>
