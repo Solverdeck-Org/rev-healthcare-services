@@ -59,9 +59,6 @@ export async function SiteHeader() {
               {settings.phone}
             </a>
           ) : null}
-          {/* LOGIN button — commented out until the member area exists.
-              Restore by uncommenting; the label and href come from
-              SiteSettings.ctaLabel / SiteSettings.ctaHref.
           {settings.ctaLabel ? (
             <Link
               href={settings.ctaHref ?? "#"}
@@ -70,7 +67,6 @@ export async function SiteHeader() {
               {settings.ctaLabel}
             </Link>
           ) : null}
-          */}
         </div>
       </div>
     </header>
