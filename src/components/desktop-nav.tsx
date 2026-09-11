@@ -12,9 +12,9 @@ export function isActive(pathname: string, href: string): boolean {
 }
 
 const NAV_CLASS =
-  "hidden flex-1 items-center gap-6 md:ml-10 md:flex lg:ml-20 lg:gap-8";
+  "hidden flex-1 items-center gap-4 md:ml-4 md:flex lg:ml-8 lg:gap-6 xl:ml-14 xl:gap-9";
 const LINK_CLASS =
-  "relative flex items-center gap-2 py-5 text-base font-bold uppercase tracking-wide transition-colors after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:rounded-md lg:text-lg";
+  "relative flex items-center gap-2 whitespace-nowrap py-5 text-sm font-bold uppercase tracking-wide transition-colors after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:rounded-md xl:text-base 2xl:text-lg";
 
 export function DesktopNav({ links }: { links: NavLink[] }) {
   const pathname = usePathname();

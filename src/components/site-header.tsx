@@ -10,7 +10,7 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background">
-      <div className="relative mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
+      <div className="relative mx-auto flex h-16 max-w-[1440px] items-center gap-4 px-4 lg:h-20 lg:px-8">
         <Suspense fallback={<MobileNavFallback />}>
           <MobileNav
             links={settings.headerNav}
@@ -21,7 +21,7 @@ export async function SiteHeader() {
           />
         </Suspense>
 
-        <Link href="/" className="flex min-w-0 items-center gap-2">
+        <Link href="/" className="flex shrink-0 items-center gap-2">
           {settings.logoUrl ? (
             <Image
               src={settings.logoUrl}
@@ -32,7 +32,7 @@ export async function SiteHeader() {
               priority
             />
           ) : (
-            <span className="truncate text-base font-bold text-brand sm:text-xl">
+            <span className="whitespace-nowrap text-base font-bold text-brand sm:text-xl">
               {settings.siteName}
             </span>
           )}
@@ -42,11 +42,11 @@ export async function SiteHeader() {
           <DesktopNav links={settings.headerNav} />
         </Suspense>
 
-        <div className="ml-auto flex shrink-0 items-center gap-4">
+        <div className="ml-auto flex shrink-0 items-center gap-3 xl:gap-4">
           {settings.phone ? (
             <a
               href={settings.phoneHref ?? `tel:${settings.phone}`}
-              className="hidden items-center gap-2 text-base font-bold text-brand hover:text-brand-dark sm:inline-flex lg:text-lg"
+              className="hidden items-center gap-2 whitespace-nowrap text-sm font-bold text-brand hover:text-brand-dark sm:inline-flex xl:text-base 2xl:text-lg"
             >
               <svg
                 aria-hidden="true"
