@@ -24,42 +24,27 @@ export type MemberResult =
   /** Authenticated fine, but the OAuth app cannot read members. */
   | { status: "no-permission" };
 
-type WixMember = {
-  member?: {
-    _id?: string;
-    loginEmail?: string;
-    loginEmailVerified?: boolean;
-    _createdDate?: string;
-    profile?: {
-      nickname?: string;
-      firstName?: string;
-      lastName?: string;
-      photo?: { url?: string };
-    };
+/**
+ * The REST API returns bare keys (`id`, `createdDate`) while the JavaScript
+ * SDK returns underscored ones (`_id`, `_createdDate`). Accept either, so a
+ * shape change on Wix's side cannot silently blank the profile again.
+ */
+type WixMemberRecord = {
+  id?: string;
+  _id?: string;
+  loginEmail?: string;
+  loginEmailVerified?: boolean;
+  createdDate?: string;
+  _createdDate?: string;
+  profile?: {
+    nickname?: string;
+    firstName?: string;
+    lastName?: string;
+    photo?: { url?: string };
   };
 };
 
-/**
- * Wix access tokens wrap a JWT. Peeking at the payload tells us whether the
- * caller is a member or still a visitor — the difference between "no member
- * record" and "we stored the wrong token".
- */
-function describeToken(token: string): string {
-  try {
-    const jwt = token.split(".").find((part) => part.startsWith("eyJ"));
-    if (!jwt) return "token: unrecognised format";
-    const json = JSON.parse(
-      Buffer.from(jwt, "base64").toString("utf8").replace(/\0/g, ""),
-    ) as Record<string, unknown>;
-    const data =
-      typeof json.data === "string"
-        ? (JSON.parse(json.data) as Record<string, unknown>)
-        : json;
-    return `token identity: ${JSON.stringify(data).slice(0, 240)}`;
-  } catch {
-    return "token: could not decode";
-  }
-}
+type WixMember = { member?: WixMemberRecord };
 
 const MY_MEMBER =
   "https://www.wixapis.com/members/v1/members/my?fieldsets=FULL";
@@ -96,12 +81,11 @@ export async function getMember(): Promise<MemberResult> {
   }
 
   if (!response.ok) {
-    const body = await response.text();
     // Wix answers a missing permission with 403 and an empty body.
     if (response.status === 403) return { status: "no-permission" };
     return {
       status: "unauthorized",
-      detail: `${response.status} ${body.slice(0, 300)}`,
+      detail: `Wix rejected the session (${response.status}).`,
     };
   }
 
@@ -121,28 +105,27 @@ export async function getMember(): Promise<MemberResult> {
   if (!member && raw.includes('"details":{}')) {
     return { status: "no-permission" };
   }
-  if (!member?._id) {
+
+  const id = member?.id ?? member?._id;
+  if (!id) {
     // Authenticated, but this identity has no site-member record yet.
     return {
       status: "unauthorized",
-      detail: [
-        `Wix returned no member. Response: ${raw.slice(0, 200)}`,
-        describeToken(token),
-      ].join("\n\n"),
+      detail: "Wix returned no member record for this account.",
     };
   }
 
   return {
     status: "ok",
     member: {
-      id: member._id,
-      nickname: member.profile?.nickname,
-      firstName: member.profile?.firstName,
-      lastName: member.profile?.lastName,
-      email: member.loginEmail,
-      emailVerified: member.loginEmailVerified,
-      pictureUrl: member.profile?.photo?.url,
-      createdDate: member._createdDate,
+      id,
+      nickname: member?.profile?.nickname,
+      firstName: member?.profile?.firstName,
+      lastName: member?.profile?.lastName,
+      email: member?.loginEmail,
+      emailVerified: member?.loginEmailVerified,
+      pictureUrl: member?.profile?.photo?.url,
+      createdDate: member?.createdDate ?? member?._createdDate,
     },
   };
 }
