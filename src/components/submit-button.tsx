@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   children: React.ReactNode;
@@ -9,25 +9,42 @@ type Props = {
 };
 
 /**
- * Submit button that shows a spinner while the form posts. These forms are
- * plain HTML posts that navigate, so we track the submit event ourselves
- * rather than using useFormStatus (which only tracks form actions).
+ * Submit button that shows a spinner while the form posts.
+ *
+ * The pending state is driven by the form's own `submit` event, not the
+ * button's click. Setting `disabled` during the click handler cancels the
+ * browser's default submit, which silently stops the form from posting.
  */
 export function SubmitButton({ children, className, pendingLabel }: Props) {
   const [pending, setPending] = useState(false);
+  const ref = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const form = ref.current?.form;
+    if (!form) return;
+
+    const onSubmit = () => setPending(true);
+    form.addEventListener("submit", onSubmit);
+
+    // Coming back via the browser's back/forward cache must not leave a
+    // button stuck in its spinning state.
+    const onShow = () => setPending(false);
+    window.addEventListener("pageshow", onShow);
+
+    return () => {
+      form.removeEventListener("submit", onSubmit);
+      window.removeEventListener("pageshow", onShow);
+    };
+  }, []);
 
   return (
     <button
+      ref={ref}
       type="submit"
-      disabled={pending}
       aria-busy={pending}
-      onClick={(event) => {
-        const form = event.currentTarget.form;
-        // Let the browser run validation first; only spin on a real submit.
-        if (form && !form.checkValidity()) return;
-        setPending(true);
-      }}
-      className={`inline-flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-70 ${className ?? ""}`}
+      className={`inline-flex items-center justify-center gap-2 ${
+        pending ? "pointer-events-none opacity-70" : ""
+      } ${className ?? ""}`}
     >
       {pending ? (
         <>
