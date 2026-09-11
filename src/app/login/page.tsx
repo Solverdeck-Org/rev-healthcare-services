@@ -48,14 +48,15 @@ export default function LoginPage({ searchParams }: PageProps<"/login">) {
 
           <form action="/api/auth/login" method="post" className="mt-6">
             <label htmlFor="identifier" className="sr-only">
-              Screen name or email address
+              Email address
             </label>
             <input
               id="identifier"
               name="identifier"
-              autoComplete="username"
+              type="email"
+              autoComplete="email"
               required
-              placeholder="Screen name or email address"
+              placeholder="Email address"
               className={FIELD}
             />
 
