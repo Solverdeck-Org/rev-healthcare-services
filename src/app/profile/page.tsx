@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { displayName, getCurrentMember } from "@/lib/member";
+import { displayName, getMember } from "@/lib/member";
 
 export const metadata: Metadata = {
   title: "Your profile",
@@ -14,9 +14,37 @@ const TABS = [
 ];
 
 async function ProfileBody() {
-  const member = await getCurrentMember();
-  if (!member) redirect("/login");
+  const result = await getMember();
 
+  // No cookie at all: they are simply not signed in.
+  if (result.status === "signed-out") redirect("/login");
+
+  // We had a token and Wix rejected it. Say so instead of bouncing back to
+  // the login page, which looks like "login did nothing".
+  if (result.status === "unauthorized") {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16">
+        <h1 className="text-2xl font-bold">We could not load your profile</h1>
+        <p className="mt-3 text-muted">
+          You are signed in, but Wix would not accept the session. Signing in
+          again usually fixes it.
+        </p>
+        <pre className="mt-4 overflow-x-auto rounded-md bg-surface p-4 text-xs text-muted">
+          {result.detail}
+        </pre>
+        <form action="/api/auth/logout" method="post" className="mt-6">
+          <button
+            type="submit"
+            className="rounded-md bg-brand px-6 py-3 font-semibold text-brand-contrast hover:bg-brand-dark"
+          >
+            Sign in again
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  const member = result.member;
   const name = displayName(member);
 
   return (

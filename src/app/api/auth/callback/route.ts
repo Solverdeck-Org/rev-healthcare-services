@@ -4,6 +4,7 @@ import {
   memberTokens,
   PKCE_COOKIE,
   REFRESH_COOKIE,
+  SESSION_MARKER,
 } from "@/lib/wix-auth";
 import { backToLogin, SECURE_COOKIE } from "../shared";
 
@@ -53,6 +54,13 @@ export async function GET(request: Request) {
     response.cookies.set(REFRESH_COOKIE, tokens.refresh_token, {
       ...SECURE_COOKIE,
       maxAge: 60 * 60 * 24 * 180,
+    });
+    // Browsers silently drop cookies over ~4KB. This marker is tiny, so if it
+    // survives and the token cookies do not, we know that is what happened.
+    response.cookies.set(SESSION_MARKER, "1", {
+      ...SECURE_COOKIE,
+      httpOnly: false,
+      maxAge: tokens.expires_in,
     });
     response.cookies.delete(PKCE_COOKIE);
     return response;

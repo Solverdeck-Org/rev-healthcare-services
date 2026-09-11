@@ -20,6 +20,8 @@ export const ACCESS_COOKIE = "wix_member_access";
 export const REFRESH_COOKIE = "wix_member_refresh";
 export const PKCE_COOKIE = "wix_auth_pkce";
 export const STATE_COOKIE = "wix_auth_state_token";
+/** Small marker proving the callback ran, even if the token cookies were dropped. */
+export const SESSION_MARKER = "wix_auth_ok";
 
 export function clientId(): string {
   const id = process.env.WIX_CLIENT_ID;
