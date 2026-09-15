@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { LinkSelect } from "@/components/link-select";
 import { UseMyLocation } from "@/components/use-my-location";
 import type { Section } from "@/lib/content";
 
@@ -448,35 +449,19 @@ function FeaturePanel({ section }: { section: Section }) {
 
               {links.length ? (
                 <div>
-                  {/* Mobile: a collapsed dropdown so a long city list
-                      doesn't push the form far down the page. */}
-                  <details className="group rounded-md border border-border md:hidden">
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 font-bold marker:hidden">
-                      {section.secondaryHeading ?? "Popular locations"}
-                      <svg
-                        aria-hidden="true"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        className="size-5 shrink-0 text-brand transition-transform group-open:rotate-180"
-                      >
-                        <path d="m6 9 6 6 6-6" />
-                      </svg>
-                    </summary>
-                    <ul className="grid grid-cols-2 gap-3 border-t border-border px-4 py-4">
-                      {links.map((item) => (
-                        <li key={`${item.title}-${item.href}`}>
-                          <Link
-                            href={item.href ?? "#"}
-                            className="text-brand hover:underline"
-                          >
-                            {item.title}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </details>
+                  {/* Mobile: a native select, so a long city list takes
+                      one line instead of pushing the form down the page. */}
+                  <div className="md:hidden">
+                    <LinkSelect
+                      id={`${section.key}-links`}
+                      label={section.secondaryHeading ?? "Popular locations"}
+                      placeholder="Choose a city"
+                      options={links.map((item) => ({
+                        label: item.title,
+                        href: item.href ?? "#",
+                      }))}
+                    />
+                  </div>
 
                   {/* Desktop: the open two-column list from the template. */}
                   <div className="hidden md:block">
