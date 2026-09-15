@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { login, STATE_COOKIE } from "@/lib/wix-auth";
+import { describeAuthError, login, STATE_COOKIE } from "@/lib/wix-auth";
 import {
   backToLogin,
   completeLogin,
@@ -55,9 +55,16 @@ export async function POST(request: Request) {
     }
 
     return completeLogin(request, result.sessionToken);
-  } catch {
+  } catch (error) {
+    console.error("[auth/login]", error);
     return NextResponse.redirect(
-      backToLogin(request, "That email address or password is incorrect."),
+      backToLogin(
+        request,
+        describeAuthError(
+          error,
+          "That email address or password is incorrect.",
+        ),
+      ),
       303,
     );
   }

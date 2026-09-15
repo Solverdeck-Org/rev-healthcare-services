@@ -33,6 +33,62 @@ export function clientId(): string {
   return id;
 }
 
+/** A failed Wix auth call, carrying the application code Wix sent back. */
+export class WixAuthError extends Error {
+  constructor(
+    readonly status: number,
+    readonly code: string | undefined,
+    readonly body: string,
+  ) {
+    super(
+      `Wix auth ${status}${code ? ` (${code})` : ""}: ${body.slice(0, 300)}`,
+    );
+  }
+}
+
+function applicationCode(body: string): string | undefined {
+  try {
+    const parsed = JSON.parse(body) as {
+      details?: { applicationError?: { code?: string } };
+    };
+    return parsed.details?.applicationError?.code;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Turns a Wix auth failure into a message a visitor can act on. Wix mixes
+ * named codes (DUPLICATE_EMAIL) with numeric ones (-19971 for a missing
+ * CAPTCHA), so match on both the code and the message text.
+ */
+export function describeAuthError(error: unknown, fallback: string): string {
+  if (!(error instanceof WixAuthError)) return fallback;
+  const code = error.code ?? "";
+  const text = error.body.toLowerCase();
+
+  if (code === "DUPLICATE_EMAIL" || error.status === 409) {
+    return "An account with this email already exists. Log in instead.";
+  }
+  if (
+    text.includes("captcha") ||
+    code.includes("CAPTCHA") ||
+    code === "-19971"
+  ) {
+    return "Sign-up is temporarily unavailable. Please call us and we will set up your account.";
+  }
+  if (code === "THROTTLED_FEATURE" || error.status === 429) {
+    return "Too many attempts. Please wait a minute and try again.";
+  }
+  if (code.startsWith("VALUE") || text.includes("password")) {
+    return "That password does not meet the requirements. Try a longer one.";
+  }
+  if (text.includes("email")) {
+    return "That email address does not look right. Check it and try again.";
+  }
+  return fallback;
+}
+
 async function post<T>(url: string, body: unknown, token?: string): Promise<T> {
   const response = await fetch(url, {
     method: "POST",
@@ -46,7 +102,7 @@ async function post<T>(url: string, body: unknown, token?: string): Promise<T> {
 
   const text = await response.text();
   if (!response.ok) {
-    throw new Error(`Wix auth ${response.status}: ${text}`);
+    throw new WixAuthError(response.status, applicationCode(text), text);
   }
   return JSON.parse(text) as T;
 }

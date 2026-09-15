@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { register, STATE_COOKIE } from "@/lib/wix-auth";
+import { describeAuthError, register, STATE_COOKIE } from "@/lib/wix-auth";
 import {
   backToLogin,
   completeLogin,
@@ -59,9 +59,13 @@ export async function POST(request: Request) {
     }
 
     return completeLogin(request, result.sessionToken);
-  } catch {
+  } catch (error) {
+    console.error("[auth/signup]", error);
     return NextResponse.redirect(
-      backToLogin(request, "We could not create your account."),
+      backToLogin(
+        request,
+        describeAuthError(error, "We could not create your account."),
+      ),
       303,
     );
   }

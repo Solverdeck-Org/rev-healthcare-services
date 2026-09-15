@@ -448,23 +448,56 @@ function FeaturePanel({ section }: { section: Section }) {
 
               {links.length ? (
                 <div>
-                  {section.secondaryHeading ? (
-                    <h3 className="text-xl font-bold">
-                      {section.secondaryHeading}
-                    </h3>
-                  ) : null}
-                  <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                    {links.map((item) => (
-                      <li key={`${item.title}-${item.href}`}>
-                        <Link
-                          href={item.href ?? "#"}
-                          className="text-brand hover:underline"
-                        >
-                          {item.title}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
+                  {/* Mobile: a collapsed dropdown so a long city list
+                      doesn't push the form far down the page. */}
+                  <details className="group rounded-md border border-border md:hidden">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 font-bold marker:hidden">
+                      {section.secondaryHeading ?? "Popular locations"}
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className="size-5 shrink-0 text-brand transition-transform group-open:rotate-180"
+                      >
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </summary>
+                    <ul className="grid grid-cols-2 gap-3 border-t border-border px-4 py-4">
+                      {links.map((item) => (
+                        <li key={`${item.title}-${item.href}`}>
+                          <Link
+                            href={item.href ?? "#"}
+                            className="text-brand hover:underline"
+                          >
+                            {item.title}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+
+                  {/* Desktop: the open two-column list from the template. */}
+                  <div className="hidden md:block">
+                    {section.secondaryHeading ? (
+                      <h3 className="text-xl font-bold">
+                        {section.secondaryHeading}
+                      </h3>
+                    ) : null}
+                    <ul className="mt-4 grid gap-3 lg:grid-cols-1 xl:grid-cols-2">
+                      {links.map((item) => (
+                        <li key={`${item.title}-${item.href}`}>
+                          <Link
+                            href={item.href ?? "#"}
+                            className="text-brand hover:underline"
+                          >
+                            {item.title}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               ) : null}
 
